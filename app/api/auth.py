@@ -43,6 +43,7 @@ def register(user: UserCreate, db: Session = Depends(get_session)):
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_session)
 ):
+    print("SECRET_KEY:", config.SECRET_KEY)
     user = db.query(User).filter(User.username == form_data.username).first()
     if not user or not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
