@@ -21,7 +21,7 @@ class Salary(Base):
     amount: Mapped[int] = mapped_column(
         Integer,
     )
-    next_raise_data: Mapped[datetime] = mapped_column(
+    next_raise_date: Mapped[datetime] = mapped_column(
         DateTime,
     )
     created_at: Mapped[datetime] = mapped_column(
