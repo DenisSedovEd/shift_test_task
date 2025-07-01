@@ -1,15 +1,14 @@
 from fastapi import FastAPI
-from app.api import auth, salary
-from app.database import Base, engine
+from api import auth, salary
+from models.db import Base, engine
 
 app = FastAPI()
 
-# Создание таблиц в базе данных
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
-# Подключение роутеров
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(salary.router, tags=["salary"])
+
 
 @app.get("/")
 def read_root():
