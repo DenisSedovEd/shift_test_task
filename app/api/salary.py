@@ -15,17 +15,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 @router.get("/salary")
-def get_salary(token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
-    try:
-        payload = decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
-        username = payload.get("sub")
-        if not username:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        # Достаём зарплату только для текущего пользователя
-        user = db.query(User).filter(User.username == username).first()
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        salary = db.query(Salary).filter(Salary.user_id == user.id).first()
-        return {"salary": salary.amount, "next_raise_date": salary.next_raise_date}
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
+def get_salary(
+    current_user: User = Depends(get_current_user), db: Session = Depends(get_session)
+):
+    salary = db.query(Salary).filter(Salary.user_id == current_user.id).first()
+    if not salary:
+        raise HTTPException(status_code=404, detail="Salary not found")
+    return {"salary": salary.amount, "next_raise_date": salary.next_raise_date}
