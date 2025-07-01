@@ -29,8 +29,8 @@ def register(user: UserCreate, db: Session = Depends(get_session)):
         username=user.username,
         hashed_password=hashed_password,
     )
-
     db.add(db_user)
+    db.commit()
     db.refresh(db_user)
 
     return UserResponse(
