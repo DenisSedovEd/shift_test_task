@@ -21,4 +21,7 @@ def get_salary(
     salary = db.query(Salary).filter(Salary.user_id == current_user.id).first()
     if not salary:
         raise HTTPException(status_code=404, detail="Salary not found")
+    print("salary obj:", salary)
+    print("salary.amount:", salary.amount)
+    print("salary.next_raise_date:", salary.next_raise_date)
     return {"salary": salary.amount, "next_raise_date": salary.next_raise_date}

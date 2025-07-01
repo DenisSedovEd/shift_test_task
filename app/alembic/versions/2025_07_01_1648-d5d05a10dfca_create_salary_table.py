@@ -1,8 +1,8 @@
-"""fix creatad_at colomn in tables
+"""create salary table
 
-Revision ID: a763f59bfeef
-Revises: 9528bc2fd440
-Create Date: 2025-07-01 14:17:53.969840
+Revision ID: d5d05a10dfca
+Revises: a16270587733
+Create Date: 2025-07-01 16:48:03.449009
 
 """
 
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "a763f59bfeef"
-down_revision: Union[str, Sequence[str], None] = "9528bc2fd440"
+revision: str = "d5d05a10dfca"
+down_revision: Union[str, Sequence[str], None] = "a16270587733"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
