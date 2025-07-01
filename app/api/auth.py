@@ -9,6 +9,7 @@ from random import randint
 from models.db import get_session
 from models import User, Salary
 from schemas import Token, UserCreate, UserResponse
+import config
 
 router = APIRouter()
 
@@ -46,10 +47,11 @@ def login_for_access_token(
     if not user or not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    access_token_expires = timedelta(minutes=30)
+    access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    exp = datetime.utcnow() + access_token_expires
     access_token = encode(
-        {"sub": user.username, "exp": datetime.utcnow() + access_token_expires},
-        "your-secret-key",
-        algorithm="HS256",
+        {"sub": user.username, "exp": int(exp.timestamp())},
+        config.SECRET_KEY,
+        config.ALGORITHM,
     )
     return {"access_token": access_token, "token_type": "bearer"}

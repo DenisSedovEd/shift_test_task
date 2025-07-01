@@ -3,6 +3,9 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from models.db import get_session
 from models import User, Salary
+
+import config
+
 from jwt import decode
 from schemas import SalaryInfo
 from security import get_current_user
@@ -14,7 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 @router.get("/salary")
 def get_salary(token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
     try:
-        payload = decode(token, "your-secret-key", algorithms=["HS256"])
+        payload = decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
         username = payload.get("sub")
         if not username:
             raise HTTPException(status_code=401, detail="Invalid token")

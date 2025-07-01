@@ -4,6 +4,8 @@ from jwt import decode
 from datetime import datetime
 from sqlalchemy.orm import Session
 
+import config
+
 from models.db import get_session
 from models import User
 
@@ -14,7 +16,7 @@ def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)
 ):
     try:
-        payload = decode(token, "your-secret-key", algorithms=["HS256"])
+        payload = decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise HTTPException(status_code=401, detail="Invalid token")
