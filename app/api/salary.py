@@ -17,7 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 @router.get("/salary")
 def get_salary(
     current_user: User = Depends(get_current_user), db: Session = Depends(get_session)
-) -> dict[str:Salary]:
+):
     """
     Маршрутная функция, в случае проверки валидности токена возвращает данные о Salary.
     :param current_user: Пользователь, для которого считывается salary.
