@@ -11,5 +11,9 @@ convention = {
 
 
 class Base(DeclarativeBase):
+    """
+    Базовый класс, с metadata и полем id.
+    """
+
     metadata = MetaData(naming_convention=convention)
     id: Mapped[int] = mapped_column(primary_key=True)

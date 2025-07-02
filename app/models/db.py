@@ -14,6 +14,10 @@ Base = declarative_base()
 
 
 def get_session():
+    """
+    Генератор сессий
+    :return:
+    """
     db = Session()
     try:
         yield db
@@ -22,6 +26,12 @@ def get_session():
 
 
 def set_foreign_keys_on_for_sqlite(dbapi_con, connection_record):
+    """
+    Включение проверки внешних ключей для SQLite.
+    :param dbapi_con:
+    :param connection_record:
+    :return:
+    """
     cursor = dbapi_con.cursor()
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()

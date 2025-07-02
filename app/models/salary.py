@@ -28,3 +28,9 @@ class Salary(Base):
         DateTime,
         default=datetime.utcnow,
     )
+
+    def __str__(self):
+        return f"Salary for user {self.user_id}"
+
+    def __repr__(self):
+        return f"Salary for user {self.user_id}"

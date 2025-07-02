@@ -1,7 +1,9 @@
+from typing import Any
+
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
-from jwt import encode, decode
+from jwt import encode
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from random import randint
@@ -17,15 +19,18 @@ pwd_context = CryptContext(schemes="bcrypt", deprecated="auto")
 
 
 @router.post("/register", response_model=UserResponse)
-def register(user: UserCreate, db: Session = Depends(get_session)):
-    # Проверяем, не существует ли уже пользователь с таким именем
+def register(user: UserCreate, db: Session = Depends(get_session)) -> UserResponse:
+    """
+    Маршрутная функция регистрации.
+    :param user: Полученный user
+    :param db: Автоматически полученная сессия.
+    :return: Схема
+    """
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=400, detail="Username already exists")
 
-    # Хэшируем пароль
     hashed_password = pwd_context.hash(user.password)
 
-    # Создаем нового пользователя
     db_user = User(
         username=user.username,
         hashed_password=hashed_password,
@@ -42,8 +47,13 @@ def register(user: UserCreate, db: Session = Depends(get_session)):
 @router.post("/token", response_model=Token)
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_session)
-):
-    print("SECRET_KEY:", config.SECRET_KEY)
+) -> dict[str:Any]:
+    """
+    Маршрутная функция авторизации. При корректных данных - выдается токент.
+    :param form_data: Данные введенным пользователем.
+    :param db: Автоматически полученная сессия.
+    :return: токен
+    """
     user = db.query(User).filter(User.username == form_data.username).first()
     if not user or not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")

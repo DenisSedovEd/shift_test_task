@@ -28,3 +28,9 @@ class User(Base):
         "Salary",
         back_populates="user",
     )
+
+    def __str__(self):
+        return self.username
+
+    def __repr__(self):
+        return f"User {self.username}"

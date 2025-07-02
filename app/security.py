@@ -14,19 +14,20 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)
-):
-    print("SECRET_KEY:", config.SECRET_KEY)
-    payload = decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
-    username: str = payload.get("sub")
-    # if username is None:
-    #     raise HTTPException(status_code=401, detail="Invalid token")
-    # try:
-    #     payload = decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
-    #     username: str = payload.get("sub")
-    #     if username is None:
-    #         raise HTTPException(status_code=401, detail="Invalid token")
-    # except Exception:
-    #     raise HTTPException(status_code=401, detail="Could not validate credentials")
+) -> type[User]:
+    """
+    Функция проверки валидности токена и наличия user в бд.
+    :param token: Выданный токен.
+    :param db: Автоматически полученная сессия.
+    :return: User
+    """
+    try:
+        payload = decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception:
+        raise HTTPException(status_code=401, detail="Could not validate credentials")
 
     user = db.query(User).filter(User.username == username).first()
     if not user:
